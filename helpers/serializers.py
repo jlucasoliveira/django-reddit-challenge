@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Optional, Type
 
+from rest_auth.serializers import UserDetailsSerializer
 from rest_framework import serializers
 from rest_framework.exceptions import NotFound
 
@@ -45,3 +46,7 @@ class TimestampSerializerMixin(serializers.ModelSerializer):
 
 class AuthorCreateMixin(serializers.Serializer):
     author = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
+
+class AuthorMixin(serializers.Serializer):
+    author = UserDetailsSerializer(read_only=True)

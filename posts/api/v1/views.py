@@ -25,8 +25,10 @@ class TopicViewSet(viewsets.ModelViewSet):
     serializer_class = api_serializers.TopicSerializer
 
     def get_serializer_class(self: TopicViewSet) -> Serializer:
-        if self.action in ["list", "retrieve"]:
+        if self.action == "list":
             return api_serializers.TopicListSerializer
+        if self.action == "retrieve":
+            return api_serializers.TopicRetrieveSerializer
         return super().get_serializer_class()
 
 
@@ -34,10 +36,24 @@ class PostViewSet(NestedModelViewSet):
     parent_url_kwarg = "topic"
     parent_url_field = "url_name"
     queryset = models.Post.objects.select_related("author")
-    serializer_class = api_serializers.PostListSerializer
+    serializer_class = api_serializers.PostSerializer
+
+    def get_serializer_class(self: PostViewSet) -> Serializer:
+        if self.action == "list":
+            return api_serializers.PostListSerializer
+        if self.action == "retrieve":
+            return api_serializers.PostRetrieveSerializer
+        return super().get_serializer_class()
 
 
 class CommentViewSet(NestedModelViewSet):
     parent_url_kwarg = "post"
     queryset = models.Comment.objects.select_related("author")
     serializer_class = api_serializers.CommentSerializer
+
+    def get_serializer_class(self: CommentViewSet) -> Serializer:
+        if self.action == "retrieve":
+            return api_serializers.CommentRetrieveSerializer
+        if self.action == "list":
+            return api_serializers.CommentListSerializer
+        return super().get_serializer_class()
