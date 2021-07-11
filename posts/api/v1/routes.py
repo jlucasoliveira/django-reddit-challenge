@@ -9,3 +9,7 @@ topic_router.register("topics", api_views.TopicViewSet, basename="topics")
 
 post_router = NestedSimpleRouter(topic_router, "topics", lookup="topic")
 post_router.register("posts", api_views.PostViewSet, basename="posts")
+
+
+comment_router = NestedSimpleRouter(post_router, "posts", lookup="post")
+comment_router.register("comments", api_views.CommentViewSet, basename="comments")
