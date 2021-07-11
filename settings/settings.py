@@ -166,7 +166,9 @@ if DEBUG or ENVIRONMENT == "test":
 # Rest Framework
 ###
 REST_FRAMEWORK = {
-    "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly"],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "posts.api.v1.permissions.IsAuthor",
+    ],
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.TokenAuthentication",
     ],
