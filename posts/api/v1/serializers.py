@@ -34,3 +34,18 @@ class PostListSerializer(TimestampSerializerMixin, AuthorCreateMixin):
     class Meta:
         model = models.Post
         fields = ("pk", "title", "content", "author", "topic", "created_at", "updated_at")
+
+
+class CommentSerializer(TimestampSerializerMixin, AuthorCreateMixin):
+    author = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    post = serializers.HiddenField(
+        default=NestedObject(
+            lookup="post_pk",
+            lookup_field="pk",
+            model=models.Post,
+        )
+    )
+
+    class Meta:
+        model = models.Comment
+        fields = ("pk", "title", "content", "author", "post", "created_at", "updated_at")

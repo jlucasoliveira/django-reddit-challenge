@@ -9,6 +9,13 @@ from posts import models
 from posts.api.v1 import serializers as api_serializers
 
 
+class NestedModelViewSet(viewsets.ModelViewSet):
+    def get_serializer_context(self: PostViewSet) -> Dict[str, Any]:
+        context = super().get_serializer_context()
+        context.update({"kwargs": self.kwargs})
+        return context
+
+
 class TopicViewSet(viewsets.ModelViewSet):
     lookup_field = "url_name"
     lookup_url_kwarg = "url_name"
@@ -21,11 +28,11 @@ class TopicViewSet(viewsets.ModelViewSet):
         return super().get_serializer_class()
 
 
-class PostViewSet(viewsets.ModelViewSet):
+class PostViewSet(NestedModelViewSet):
     queryset = models.Post.objects.select_related("author")
     serializer_class = api_serializers.PostListSerializer
 
-    def get_serializer_context(self: PostViewSet) -> Dict[str, Any]:
-        context = super().get_serializer_context()
-        context.update({"kwargs": self.kwargs})
-        return context
+
+class CommentViewSet(NestedModelViewSet):
+    queryset = models.Comment.objects.select_related("author")
+    serializer_class = api_serializers.CommentSerializer
