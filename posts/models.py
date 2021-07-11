@@ -2,27 +2,20 @@ from __future__ import annotations
 
 from typing import Any
 
-from django.conf import settings
 from django.db import models
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 
-from helpers.models import TimestampModel
+from helpers.models import AuthorMixin, TimestampModel
 
 
-class Topic(TimestampModel):
+class Topic(TimestampModel, AuthorMixin):
     name = models.CharField(verbose_name=_("name"), max_length=50)
     url_name = models.SlugField(verbose_name=_("URL name"), db_index=True)
     title = models.CharField(verbose_name=_("title"), max_length=150)
     description = models.TextField(
         verbose_name=_("description"),
         max_length=350,
-    )
-    author = models.ForeignKey(
-        to=settings.AUTH_USER_MODEL,
-        on_delete=models.deletion.SET_NULL,
-        null=True,
-        verbose_name=_("author"),
     )
 
     class Meta:
@@ -39,4 +32,23 @@ class Topic(TimestampModel):
         return super().save(*args, **kwargs)
 
     def __str__(self: Topic) -> str:
+        return self.title
+
+
+class Post(TimestampModel, AuthorMixin):
+    topic = models.ForeignKey(
+        to="posts.Topic",
+        on_delete=models.deletion.CASCADE,
+        verbose_name=_("topic"),
+        related_name="posts",
+        related_query_name="posts",
+    )
+    title = models.CharField(verbose_name=_("title"), max_length=150)
+    content = models.TextField(verbose_name=_("content"))
+
+    class Meta:
+        verbose_name = _("post")
+        ordering = ("-created_at",)
+
+    def __str__(self: Post) -> str:
         return self.title

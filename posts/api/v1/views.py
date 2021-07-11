@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Any, Dict
+
 from rest_framework import viewsets
 from rest_framework.serializers import Serializer
 
@@ -17,3 +19,17 @@ class TopicViewSet(viewsets.ModelViewSet):
         if self.action in ["list", "retrieve"]:
             return api_serializers.TopicListSerializer
         return super().get_serializer_class()
+
+
+class PostViewSet(viewsets.ModelViewSet):
+    queryset = models.Post.objects.select_related("author")
+    serializer_class = api_serializers.PostListSerializer
+
+    def get_serializer_context(self: PostViewSet) -> Dict[str, Any]:
+        context = super().get_serializer_context()
+        context.update(
+            {
+                "kwargs": self.kwargs,
+            }
+        )
+        return context
