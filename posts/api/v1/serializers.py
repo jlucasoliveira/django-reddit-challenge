@@ -1,7 +1,7 @@
 from rest_auth.serializers import UserDetailsSerializer
 from rest_framework import serializers
 
-from helpers.serializers import AuthorCreateMixin, TimestampSerializerMixin
+from helpers.serializers import AuthorCreateMixin, NestedObject, TimestampSerializerMixin
 from posts import models
 
 
@@ -23,6 +23,13 @@ class TopicSerializer(TimestampSerializerMixin, AuthorCreateMixin):
 
 class PostListSerializer(TimestampSerializerMixin, AuthorCreateMixin):
     author = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    topic = serializers.HiddenField(
+        default=NestedObject(
+            lookup="topic_url_name",
+            lookup_field="url_name",
+            model=models.Topic,
+        )
+    )
 
     class Meta:
         model = models.Post

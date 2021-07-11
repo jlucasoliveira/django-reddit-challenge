@@ -27,9 +27,5 @@ class PostViewSet(viewsets.ModelViewSet):
 
     def get_serializer_context(self: PostViewSet) -> Dict[str, Any]:
         context = super().get_serializer_context()
-        context.update(
-            {
-                "kwargs": self.kwargs,
-            }
-        )
+        context.update({"kwargs": self.kwargs})
         return context
