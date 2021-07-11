@@ -6,10 +6,12 @@ from rest_framework import viewsets
 from rest_framework.serializers import Serializer
 
 from posts import models
-from posts.api.v1 import serializers as api_serializers
+from posts.api.v1 import filters as api_filters, serializers as api_serializers
 
 
 class NestedModelViewSet(viewsets.ModelViewSet):
+    filter_backends = (api_filters.NestedFilter,)
+
     def get_serializer_context(self: PostViewSet) -> Dict[str, Any]:
         context = super().get_serializer_context()
         context.update({"kwargs": self.kwargs})
@@ -29,10 +31,13 @@ class TopicViewSet(viewsets.ModelViewSet):
 
 
 class PostViewSet(NestedModelViewSet):
+    parent_url_kwarg = "topic"
+    parent_url_field = "url_name"
     queryset = models.Post.objects.select_related("author")
     serializer_class = api_serializers.PostListSerializer
 
 
 class CommentViewSet(NestedModelViewSet):
+    parent_url_kwarg = "post"
     queryset = models.Comment.objects.select_related("author")
     serializer_class = api_serializers.CommentSerializer
