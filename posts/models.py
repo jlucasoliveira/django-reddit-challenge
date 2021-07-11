@@ -34,6 +34,10 @@ class Topic(TimestampModel, AuthorMixin):
     def __str__(self: Topic) -> str:
         return self.title
 
+    @property
+    def latests_posts(self: Topic) -> models.QuerySet:
+        return self.posts.all()[:15]
+
 
 class Post(TimestampModel, AuthorMixin):
     topic = models.ForeignKey(
