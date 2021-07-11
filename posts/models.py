@@ -52,3 +52,28 @@ class Post(TimestampModel, AuthorMixin):
 
     def __str__(self: Post) -> str:
         return self.title
+
+
+class Comment(TimestampModel, AuthorMixin):
+    post = models.ForeignKey(
+        to="posts.Post",
+        on_delete=models.deletion.CASCADE,
+        verbose_name=_("post"),
+        related_name="comments",
+        related_query_name="comments",
+    )
+    title = models.CharField(
+        verbose_name=_("title"),
+        max_length=250,
+    )
+    content = models.TextField(
+        verbose_name=_("content"),
+        max_length=350,
+    )
+
+    class Meta:
+        verbose_name = _("comment")
+        ordering = ("-updated_at",)
+
+    def __str__(self: Comment) -> str:
+        return self.title

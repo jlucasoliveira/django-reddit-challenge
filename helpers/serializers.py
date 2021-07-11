@@ -26,7 +26,7 @@ class NestedObject:
             lookup_field = lookup
         self.lookup_field = lookup_field
 
-    def __call__(self: NestedObject, serializer_field: serializers.Field) -> int:
+    def __call__(self: NestedObject, serializer_field: serializers.Field) -> Type[Model]:
         try:
             _id = serializer_field.context["kwargs"].get(self.lookup)
             obj = self.model.objects.get(**{self.lookup_field: _id})
