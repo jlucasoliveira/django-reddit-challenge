@@ -10,9 +10,9 @@ from django.views import View
 from helpers.models import AuthorMixin
 
 
-class IsAuthor(permissions.IsAuthenticated):
+class IsAuthenticatedAndAuthor(permissions.IsAuthenticated):
     def has_object_permission(
-        self: IsAuthor,
+        self: IsAuthenticatedAndAuthor,
         request: HttpRequest,
         view: View,
         obj: Type[AuthorMixin],

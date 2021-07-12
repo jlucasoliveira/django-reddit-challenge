@@ -21,10 +21,10 @@ dotenv.read_dotenv(os.path.join(BASE_DIR, ".env"))
 ENVIRONMENT = os.environ.get("ENVIRONMENT")
 LOAD_ENVS_FROM_FILE = True if os.environ.get("LOAD_ENVS_FROM_FILE", False) == "True" else False
 
-env_file = "envs-production.json" if ENVIRONMENT == "production" else "envs-staging.json"
-if not LOAD_ENVS_FROM_FILE:
-    S3Environ(bucket="bucket-env", key=env_file)
-    print("Loading envs from S3: {0}".format(env_file))
+# env_file = "envs-production.json" if ENVIRONMENT == "production" else "envs-staging.json"
+# if not LOAD_ENVS_FROM_FILE:
+#     S3Environ(bucket="bucket-env", key=env_file)
+#     print("Loading envs from S3: {0}".format(env_file))
 
 ###
 # Security
@@ -81,7 +81,9 @@ INSTALLED_APPS = [
     "corsheaders",
     # Applications
     "accounts",
-    "posts.apps.PostsConfig",
+    "topic.apps.TopicConfig",
+    "post.apps.PostConfig",
+    "comment.apps.CommentConfig",
 ]
 
 SITE_ID = 1
@@ -167,7 +169,7 @@ if DEBUG or ENVIRONMENT == "test":
 ###
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
-        "posts.api.v1.permissions.IsAuthor",
+        "helpers.permissions.IsAuthenticatedAndAuthor",
     ],
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.TokenAuthentication",
